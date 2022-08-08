@@ -1,4 +1,4 @@
-export function echo(input: string) {
+export function echo(input: string | number): string | number {
   return input;
 }
 
