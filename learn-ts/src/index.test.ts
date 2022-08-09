@@ -1,4 +1,4 @@
-import {echo} from 'index';
+import {echo} from './index';
 
 describe('Given a function echo', () => {
   describe('When the input text is Hello World', () => {

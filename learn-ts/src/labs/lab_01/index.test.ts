@@ -1,4 +1,4 @@
-import {add} from './index';
+import {add, subtract} from './index';
 
 describe('Given a function add', () => {
   describe('When there are two numbers defined', () => {
@@ -10,5 +10,11 @@ describe('Given a function add', () => {
       const result = add(a, b);
       expect(result).toBe(3);
     });
+
+    test('Then I expect subtract to return their difference', () => {
+      const result = subtract(a, b);
+      expect(result).toBe(-1);
+    });
+
   });
 });
