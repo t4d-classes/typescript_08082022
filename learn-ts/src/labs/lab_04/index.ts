@@ -1,4 +1,16 @@
-const product1 = {
+type ProductSize = 'small' | 'medium' | 'large';
+
+type Product = {
+  id: number,
+  name: string,
+  size: ProductSize,
+  qty: number,
+  price: number,
+}
+
+type NewProduct = Omit<Product, 'id'>;
+
+const product1: Product = {
   id: 1,
   name: 'widget',
   size: 'large',
@@ -6,7 +18,7 @@ const product1 = {
   price: 12.34,
 };
 
-const product2 = {
+const product2: Product = {
   id: 2,
   name: 'thingy',
   size: 'small',
@@ -14,7 +26,7 @@ const product2 = {
   price: 34.12,
 };
 
-const product3 = {
+const product3: Product = {
   id: 3,
   name: 'gizmo',
   size: 'small',
@@ -22,9 +34,9 @@ const product3 = {
   price: 23.45,
 };
 
-const products = [product1, product2, product3];
+const products: Product[] = [product1, product2, product3];
 
-const addProduct = (products, newProduct) => {
+const addProduct = (products: Product[], newProduct: NewProduct) => {
   return [...products, {
     ...newProduct,
     id: Math.max(...products.map(product => product.id)) + 1,
