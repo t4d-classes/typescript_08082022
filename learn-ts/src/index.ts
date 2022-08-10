@@ -5,92 +5,65 @@ export function echo(input: string | number): string | number {
   return input;
 }
 
-// const message = 'It works!';
-
-// console.log(echo(message));
-
-let t: any = undefined;
-
-console.log(typeof t); // undefined
+// export type T = typeof echo;
 
 
-t = 'hello';
-console.log(typeof t); // string
+// const echo2: T = (input) => input;
 
-t = 42;
-console.log(typeof t); // number
+// console.log(echo2('test'));
 
-const y = 42n;
-console.log(typeof y); // bigint
+// export const EMPLOYEE_TYPE_EMPLOYEE = "EMPLOYEE";
+// export const EMPLOYEE_TYPE_CONTRACTOR = "CONTRACTOR";
+// export const EMPLOYEE_TYPE_VENDOR = "VENDOR";
 
-console.log(BigInt(t) + y);
-
-t = true;
-console.log(typeof t); // boolean
-
-t = Symbol();
-console.log(typeof t); // symbol
-
-t = null
-console.log(typeof t); // null
-
-t = { firstName: 'Bob' };
-console.log(typeof t); // object
-
-t = [1,2,3,4,5];
-console.log(typeof t); // object
-console.log(t instanceof Array); // true
-console.log(t instanceof Object); // true
-
-t = function() { return; };
-console.log(typeof t); // function
-console.log(t instanceof Function); // true
-console.log(t instanceof Object); // true
-
-
-console.dir(t);
-
-// typescript - type alias
-type Person = {
-  firstName: string;
-  lastName: string;
-};
-
-interface Person3 {
-  firstName: string;
-  lastName: string;
-}
-
-// javascript
-class Person2 {
-  firstName!: string;
-  lastName!: string;
-}
-
-const person: Person = {
-  firstName: "Bob",
-  lastName: "Smith",
-};
-
-const person2: Person2 = person;
-const person3: Person3 = person;
-
-
-console.log(person.firstName);
-console.log(person.lastName);
-
-console.log(person2.firstName);
-console.log(person2.lastName);
-
-
-// C#
-
-// class Fruit {
-//   public string Name { get; set; }
+// export enum EmployeeType {
+//   Employee = "Employee",
+//   Contractor = "Contractor",
+//   Vendor = "Vendor"
 // }
 
-// class Fruit2 {
-//   public string Name { get; set; }
-// }
 
-// Fruit fruit1 = new Fruit2();
+export type EmployeeType = 'associate' | 'contractor' | 'vendor';
+
+
+export type Person = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  employeeType: EmployeeType;
+  // employeeType: string;
+
+};
+
+export type NewPerson = Omit<Person, 'id'>;
+
+
+const newPerson: NewPerson = {
+  firstName: 'Bob',
+  lastName: 'Smith',
+  employeeType: 'associate'
+};
+
+const createPerson = (p: NewPerson) => {
+  // do something to create the person
+  console.log('created: ', p);
+
+  const person: Person = {
+    ...p,
+    id: 1,
+  };
+
+  return person;
+};
+
+
+const person = createPerson(newPerson);
+
+console.log(person.id);
+
+const x = person.id + 12;
+
+console.log(x);
+
+console.log(person);
+
