@@ -1,69 +1,74 @@
 /* eslint @typescript-eslint/no-explicit-any: "off" */
 
+import { Apple, Fruit, Item, ItemId, Orange } from "./models";
+
 
 export function echo(input: string | number): string | number {
   return input;
 }
 
-// export type T = typeof echo;
+
+type ItemIterator<S> = () => Iterator<S>;
+type AppendItem<S> = (item: Omit<S, 'id'>) => void
+type ReplaceItem<S> = (item: S) => void;
+type RemoveItem = (item: ItemId) => void;
 
 
-// const echo2: T = (input) => input;
-
-// console.log(echo2('test'));
-
-// export const EMPLOYEE_TYPE_EMPLOYEE = "EMPLOYEE";
-// export const EMPLOYEE_TYPE_CONTRACTOR = "CONTRACTOR";
-// export const EMPLOYEE_TYPE_VENDOR = "VENDOR";
-
-// export enum EmployeeType {
-//   Employee = "Employee",
-//   Contractor = "Contractor",
-//   Vendor = "Vendor"
-// }
-
-
-export type EmployeeType = 'associate' | 'contractor' | 'vendor';
-
-
-export type Person = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  employeeType: EmployeeType;
-  // employeeType: string;
-
+type CreateList = <T extends Item>(
+  initialItems?: T[],
+) => {
+  [Symbol.iterator]: ItemIterator<T>;
+  append: AppendItem<T>;
+  replace: ReplaceItem<T>;
+  remove: RemoveItem;
 };
 
-export type NewPerson = Omit<Person, 'id'>;
+const createList: CreateList = <T extends Item>(initialItems: T[] = []) => {
+  let items = initialItems;
 
-
-const newPerson: NewPerson = {
-  firstName: 'Bob',
-  lastName: 'Smith',
-  employeeType: 'associate'
-};
-
-const createPerson = (p: NewPerson) => {
-  // do something to create the person
-  console.log('created: ', p);
-
-  const person: Person = {
-    ...p,
-    id: 1,
+  return {
+    [Symbol.iterator]: () => {
+      let counter = 0;
+      return {
+        next: () => {
+          return {
+            done: counter >= items.length,
+            value: items[counter++],
+          };
+        },
+      };
+    },
+    append: (item) => {
+      items = [
+        ...items,
+        {
+          ...item,
+          id: Math.max(...items.map((item) => item.id), 0) + 1,
+        } as T,
+      ];
+    },
+    replace: (item) => {
+      const itemIndex = items.findIndex((item) => item.id === item.id);
+      const newItems = [...items];
+      newItems[itemIndex] = item;
+      items = newItems;
+    },
+    remove: (itemId) => {
+      items = items.filter((item) => item.id === itemId);
+    },
+  } as {
+    [Symbol.iterator]: ItemIterator<T>;
+    append: AppendItem<T>;
+    replace: ReplaceItem<T>;
+    remove: RemoveItem;
   };
-
-  return person;
 };
 
+const fruits = createList<Fruit>();
 
-const person = createPerson(newPerson);
+fruits.append(new Apple());
+fruits.append(new Orange());
 
-console.log(person.id);
-
-const x = person.id + 12;
-
-console.log(x);
-
-console.log(person);
-
+for (const fruit of fruits) {
+  console.log(fruit);
+}

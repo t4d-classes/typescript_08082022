@@ -1,0 +1,82 @@
+/* eslint @typescript-eslint/no-explicit-any: "off" */
+
+import { Apple, Fruit, Item, ItemId, Orange } from "./models";
+
+
+export function echo(input: string | number): string | number {
+  return input;
+}
+
+// implement some kind of function to perform the following operations:
+// 1 + 2 => 3
+// 4 + 5 => 9
+// 3 + 7 => 10
+
+// const add1plus2 = () => 1 + 2;
+// console.log(add1plus2());
+
+// const add4plus5 = () => 4 + 5;
+// console.log(add4plus5());
+
+// const add3plus7 = () => 1 + 2;
+// console.log(add3plus7());
+
+// const add = (x,y) => x + y;
+// console.log(add(1,2));
+// console.log(add(4,5));
+// console.log(add(3,7));
+
+
+
+class List<T extends Item> {
+
+  constructor(private items: T[] = []) {}
+
+  [Symbol.iterator](): Iterator<T> {
+    let counter = 0;
+    return {
+      next: () => {
+        return {
+          done: counter >= this.items.length,
+          value: this.items[counter++],
+        };
+      }
+    };
+  }
+
+
+  append(item: Omit<T, 'id'>) {
+
+    const itemCopy = item.clone();
+    itemCopy.id = Math.max(...this.items.map(item => item.id), 0) + 1;
+
+    this.items = [
+      ...this.items,
+      itemCopy as T,
+    ];
+  }
+
+  replace(item: T) {
+    const itemIndex = this.items.findIndex(i => i.id === item.id);
+    const newItems = [...this.items];
+    newItems[itemIndex] = item;
+    this.items = newItems;
+  }
+
+  remove(itemId: ItemId) {
+    this.items = this.items.filter(item => item.id !== itemId);
+  }
+
+}
+
+const fruits = new List<Fruit>();
+
+fruits.append(new Orange());
+fruits.append(new Apple());
+
+
+for (const fruit of fruits) {
+  console.log("apple after the append")
+  console.log(fruit.name);
+  fruit.eat();
+}
